@@ -1,197 +1,145 @@
-# A2ZLotto Node.js Server
+# A2Z Lotto Node.js Server
 
-A comprehensive Node.js server for the A2ZLotto lottery gaming platform, combining features from both the original a2zlottoserver and webapp.
+Complete Lottery Gaming Platform with enhanced architecture, security, and performance.
 
-## 🚀 Features
+## 🚀 Quick Start
 
-### Authentication & Authorization
-- **Multi-role authentication** (Super Admin, Admin, User, Agent, Staff)
-- **JWT-based authentication** with passport.js
-- **Appkey validation** for public endpoints
-- **Session management** with express-session
+### Prerequisites
+- Node.js (v16 or higher)
+- MongoDB (v4.4 or higher)
+- Gmail account with 2-Step Verification enabled
 
-### Lottery Game Management
-- **Multiple lottery types**: Thailand, Bangkok Weekly, Dubai Daily, London Weekly, Mexico Monthly
-- **Game play types**: First Prize, Three Up, Two Up, Two Down, Single, Total
-- **Real-time game results** with automatic updates
-- **Game permissions** and settings management
-- **Game boards** and result summaries
+### Installation
+```bash
+npm install
+```
 
-### Financial Management
-- **Recharge system** with multiple payment methods
-- **Withdrawal system** with bank card integration
-- **Transaction history** and management
-- **Wallet management** with balance tracking
-- **Referral bonus system**
+### Environment Setup
+1. Copy `development.env` to `.env` (if needed)
+2. Configure your Gmail SMTP settings (see Email Configuration below)
+3. Update MongoDB connection string if needed
 
-### User Management
-- **User registration** and profile management
-- **Email verification** system
-- **Password reset** functionality
-- **User blocking/unblocking** by admins
-- **Agent registration** and approval system
-
-### Admin Features
-- **Comprehensive admin dashboard**
-- **User management** and monitoring
-- **Transaction management** and approval
-- **System settings** configuration
-- **Application logs** and monitoring
-- **Database history** and cleanup tools
-
-### Content Management
-- **Media upload** and management
-- **Feedback system** with multiple types
-- **Help links** management
-- **Offers** and promotions system
-- **Email service** integration
-
-### System Features
-- **Cron jobs** for automated tasks
-- **Currency exchange rates** integration
-- **Mobile data** collection and management
-- **Application agents** management
-- **Swagger API documentation**
-
-## 🛠️ Technology Stack
-
-- **Node.js** - Runtime environment
-- **Express.js** - Web framework
-- **MongoDB** - Database
-- **Mongoose** - ODM for MongoDB
-- **Passport.js** - Authentication middleware
-- **JWT** - JSON Web Tokens
-- **Multer** - File upload handling
-- **Cron** - Scheduled tasks
-- **Swagger** - API documentation
-- **Pino** - Logging
-- **Cloudinary** - Cloud storage
-- **Nodemailer** - Email service
-
-## 📦 Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd nodeserver-lotto
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Set up environment variables**
-   - Copy `development.env` to `.env` for development
-   - Copy `production.env` to `.env` for production
-   - Update the variables according to your setup
-
-4. **Configure MongoDB**
-   - Ensure MongoDB is running
-   - Update `MONGO_DB_URL` in your environment file
-
-5. **Start the server**
-   ```bash
-   # Development
-   npm run start:dev
-   
-   # Production
-   npm start
-   ```
-
-## 🔧 Configuration
-
-### Environment Variables
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `NODE_ENV` | Environment (development/production) | production |
-| `PORT` | Server port | 3001 |
-| `SECURE_APP_KEY` | App key for public endpoints | 68c1b935-1c1f-4c10-b16b-3fd6e3cba270 |
-| `MONGO_DB_URL` | MongoDB connection string | mongodb://localhost:27017/A2ZLottoDB |
-| `jwtSecret` | JWT secret key | a2ZlOtToSeCrEtKeY |
-| `email` | Email service account | test@gmail.com |
-| `emailPassword` | Email service password | test@123 |
-
-### API Endpoints
-
-The server provides comprehensive API endpoints organized by functionality:
-
-- **Authentication**: `/api/user/*`
-- **Game Settings**: `/api/gameSettings/*`
-- **Lottery Games**: `/api/lotteryGame*/*`
-- **Financial**: `/api/recharge/*`, `/api/withdraw/*`, `/api/bankcard/*`
-- **Admin**: `/api/applicationAgent/*`, `/api/applicationLogs/*`
-- **Content**: `/api/feedback/*`, `/api/media/*`, `/api/offer/*`
-- **System**: `/api/currency/*`, `/api/db/*`
-
-## 🔐 Security Features
-
-- **Appkey validation** for public endpoints
-- **JWT token authentication** for protected routes
-- **Role-based access control** (RBAC)
-- **Input validation** with express-validator
-- **CORS configuration** for cross-origin requests
-- **Rate limiting** and request validation
-
-## 📊 Database Models
-
-The server includes comprehensive MongoDB models:
-
-- **User** - User accounts and profiles
-- **GameSetting** - Application settings
-- **LotteryGameSetting** - Lottery game configurations
-- **LotteryGamePermission** - Game permissions
-- **LotteryGameBoard** - Game boards
-- **LotteryGamePlay** - Game plays and history
-- **LotteryGameResult** - Game results
-- **Recharge** - Recharge transactions
-- **Withdraw** - Withdrawal transactions
-- **BankCard** - Bank card management
-- **Feedback** - User feedback
-- **Media** - Media files
-- **Offer** - Promotional offers
-- **ApplicationAgent** - Agent applications
-- **ApplicationLog** - System logs
-
-## 🚀 Deployment
-
-### Development
+### Start Development Server
 ```bash
 npm run start:dev
 ```
 
-### Production
-```bash
-npm start
+## 📧 Email Configuration
+
+The application uses Gmail SMTP for sending emails. Follow these steps to configure it:
+
+### Step 1: Enable 2-Step Verification
+1. Go to your [Google Account settings](https://myaccount.google.com/)
+2. Click on "Security" in the left sidebar
+3. Under "Signing in to Google", click on "2-Step Verification"
+4. Follow the steps to enable 2-Step Verification
+
+### Step 2: Generate App Password
+1. Go to your [Google Account settings](https://myaccount.google.com/)
+2. Click on "Security" in the left sidebar
+3. Under "Signing in to Google", click on "App passwords"
+4. Select "Mail" from the dropdown
+5. Click "Generate"
+6. Copy the 16-character password
+
+### Step 3: Update Environment Variables
+Update your `development.env` file:
+
+```env
+# Email Configuration
+email=your-gmail@gmail.com
+emailPassword=your-16-character-app-password
 ```
 
-### Docker (Optional)
-```dockerfile
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-EXPOSE 3001
-CMD ["npm", "start"]
+### Step 4: Test Email Configuration
+```bash
+npm run test:email
 ```
+
+### Troubleshooting Email Issues
+
+**Error: "Username and Password not accepted"**
+- Make sure you're using an **App Password**, not your regular Gmail password
+- Ensure 2-Step Verification is enabled on your Google account
+- Verify the email address is correct
+- Check that the App Password was copied correctly (16 characters, no spaces)
+
+**Error: "Less secure app access"**
+- Google no longer supports "less secure app access"
+- You must use App Passwords with 2-Step Verification enabled
+
+## 🔧 Available Scripts
+
+- `npm run start:dev` - Start development server with nodemon
+- `npm run start` - Start production server
+- `npm run test:email` - Test email configuration
+- `npm run swagger-autogen` - Generate Swagger documentation
 
 ## 📚 API Documentation
 
-The server includes comprehensive Swagger API documentation available at:
+Once the server is running, visit:
+- Swagger UI: `http://localhost:3001/api-docs`
+- API Base URL: `http://localhost:3001/api`
+
+## 🏗️ Architecture
+
+### Enhanced Features
+- **Error Handling**: Comprehensive error management with custom error classes
+- **Logging**: Structured logging with Pino
+- **Validation**: Request validation with express-validator
+- **Security**: Role-based access control, rate limiting, appkey validation
+- **Performance**: Caching, retry logic, real-time polling
+- **Monitoring**: Request/response logging, performance metrics
+
+### Directory Structure
 ```
-http://localhost:3001/api/swagger
+src/
+├── config/          # Configuration files
+├── controllers/     # Request handlers
+├── middlewares/     # Custom middleware
+├── models/          # Database models
+├── routes/          # API routes
+├── services/        # Business logic
+├── utils/           # Utility functions
+└── scripts/         # Setup and maintenance scripts
 ```
 
-## 🔄 Cron Jobs
+## 🔐 Security Features
 
-The server includes automated cron jobs for:
+- JWT-based authentication
+- Role-based authorization (SUPER_ADMIN, ADMIN, USER, AGENT, STAFF)
+- Rate limiting
+- Input validation and sanitization
+- Secure password hashing
+- CORS configuration
+- Appkey validation for public APIs
 
-- **Currency rates** updates
-- **Lottery game** start/stop scheduling
-- **Monthly bonus** releases
-- **System maintenance** tasks
+## 📊 Monitoring & Logging
+
+- Structured logging with Pino
+- Request/response logging
+- Error tracking
+- Performance monitoring
+- API usage analytics
+
+## 🚀 Deployment
+
+### Production Environment
+1. Set `NODE_ENV=production`
+2. Configure production database
+3. Set up proper email credentials
+4. Configure SSL certificates
+5. Set up monitoring and logging
+
+### Environment Variables
+```env
+NODE_ENV=production
+PORT=3001
+MONGO_DB_URL=mongodb://your-production-db
+jwtSecret=your-secure-jwt-secret
+email=your-gmail@gmail.com
+emailPassword=your-app-password
+```
 
 ## 🤝 Contributing
 
@@ -208,9 +156,10 @@ This project is licensed under the ISC License.
 ## 🆘 Support
 
 For support and questions:
-- Email: admin@a2zlotto.com
-- Documentation: Available at `/api/swagger`
-- Issues: Please use the repository issue tracker
+- Check the documentation
+- Review the email setup guide
+- Test email configuration with `npm run test:email`
+- Check server logs for detailed error information
 
 ## 🔄 Version History
 

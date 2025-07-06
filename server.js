@@ -20,6 +20,7 @@ const {
 	requestLogger 
 } = require('./src/utils/errorHandler');
 const { responseMiddleware } = require('./src/utils/apiResponse');
+const bodyParserMiddleware = require('./src/middlewares/bodyParser');
 
 // Import all routes
 var applicationLogRoutes = require('./src/routes/applicationLog');
@@ -86,6 +87,9 @@ app.use(bodyParser.urlencoded({
 	extended: true 
 }));
 app.use(cookieParser());
+
+// Custom body parser middleware for safety
+app.use(bodyParserMiddleware);
 
 // Enhanced Session Configuration
 app.use(require('express-session')({ 

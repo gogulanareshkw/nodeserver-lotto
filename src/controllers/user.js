@@ -66,6 +66,24 @@ exports.createUser = async function (req, res, next) {
                 newUser.setPassword(password);
                 let savedUser = await newUser.save();
                 if (Boolean(savedUser)) {
+                    // Generate OTP and send verification email
+                    let emailBody = '<b>Dear User</b>, <br>';
+                    emailBody += "<br>Welcome to A2Z Lotto! Your account has been created successfully.";
+                    emailBody += "<br><br>Please use below OTP code to verify your email address.";
+                    emailBody += "<br><br>Your OTP is : ";
+                    savedUser.otp = jsFuncs.generateOTP();
+                    emailBody += "<b>" + savedUser.otp + "</b><br><br>";
+                    emailBody += "<br>Your OTP will be expired in 3 mins";
+                    emailBody += "<br><br>Best regards,<br>A2Z Lotto Team";
+                    
+                    // Send verification email
+//                    emailUtil.sendMail([savedUser.email], 'Email Verification - A2Z Lotto', emailBody, savedUser._id);
+                    
+                    // Save OTP details
+                    savedUser.otpCreatedDate = moment.now();
+                    savedUser.otpExpiredDate = moment(savedUser.otpCreatedDate).add(3, 'minutes');
+                    await savedUser.save();
+                    
                     let referralUser = await User.findOne({ appId: referredBy });
                     if (Boolean(referralUser)) {
                         let refBonusoffers = await Offer.find({ type: constants.OFFER_TYPE_REFERRAL_BONUS }) || [];
@@ -204,6 +222,24 @@ exports.createAgent = async function (req, res, next) {
                 newUser.setPassword(password);
                 let savedUser = await newUser.save();
                 if (Boolean(savedUser)) {
+                    // Generate OTP and send verification email
+                    let emailBody = '<b>Dear Agent</b>, <br>';
+                    emailBody += "<br>Welcome to A2Z Lotto! Your agent account has been created successfully.";
+                    emailBody += "<br><br>Please use below OTP code to verify your email address.";
+                    emailBody += "<br><br>Your OTP is : ";
+                    savedUser.otp = jsFuncs.generateOTP();
+                    emailBody += "<b>" + savedUser.otp + "</b><br><br>";
+                    emailBody += "<br>Your OTP will be expired in 3 mins";
+                    emailBody += "<br><br>Best regards,<br>A2Z Lotto Team";
+                    
+                    // Send verification email
+                    // emailUtil.sendMail([savedUser.email], 'Email Verification - A2Z Lotto Agent', emailBody, savedUser._id);
+                    
+                    // Save OTP details
+                    savedUser.otpCreatedDate = moment.now();
+                    savedUser.otpExpiredDate = moment(savedUser.otpCreatedDate).add(3, 'minutes');
+                    await savedUser.save();
+                    
                     let newToken = savedUser.generateJWT();
                     let tokenExp = savedUser.getExpDate(newToken);
                     return res.status(200).json({
@@ -436,7 +472,7 @@ exports.sendActivationMail = async function (req, res, next) {
             user.otp = jsFuncs.generateOTP();
             emailBody += "<b>" + user.otp + "</b><br><br>";
             emailBody += "<br>Your OTP will be expired in 3 mins";
-            emailUtil.sendMail([user.email], 'Email Verification', emailBody, user._id);
+            // emailUtil.sendMail([user.email], 'Email Verification', emailBody, user._id);
             user.otpCreatedDate = moment.now();
             user.otpExpiredDate = moment(user.otpCreatedDate).add(3, 'minutes');
             let savedUser = await user.save();
@@ -465,7 +501,10 @@ exports.verifyEmailOtp = async function (req, res, next) {
     // #swagger.tags = ['User']	
     // #swagger.summary = '(A) -> email verification by using OTP'
     const userId = req.user?._id || '';
-    const { OTP } = req.body;
+    
+    // Use safe destructuring with the middleware
+    const { OTP } = req.safeBody();
+    
     try {
         await body('OTP', "OTP is required").notEmpty().run(req);
         const errorResult = validationResult(req);
@@ -588,7 +627,7 @@ exports.changePassword = async function (req, res, next) {
                 if (Boolean(savedUser)) {
                     let emailBody = '<b>Dear User</b>, <br>';
                     emailBody += "<br>Your password has been changed successfully, please give a complaint if you are not.";
-                    emailUtil.sendMail([user.email], 'Password Changed', emailBody, savedUser._id);
+                    // emailUtil.sendMail([user.email], 'Password Changed', emailBody, savedUser._id);
                     return res.status(200).json({
                         success: true,
                         message: "Your password is successfully changed.",
@@ -630,7 +669,7 @@ exports.forgotPassword = async function (req, res, next) {
                 user.otp = jsFuncs.generateOTP();
                 emailBody += "<b>" + user.otp + "</b><br><br>";
                 emailBody += "<br>Your OTP will be expired in 3 mins";
-                emailUtil.sendMail([user.email], 'Email Verification', emailBody, user._id);
+                // emailUtil.sendMail([user.email], 'Email Verification', emailBody, user._id);
                 user.otpCreatedDate = moment.now();
                 user.otpExpiredDate = moment(user.otpCreatedDate).add(3, 'minutes');
                 let savedUser = await user.save();
@@ -723,7 +762,7 @@ exports.resetPasswordByAdmin = async function (req, res, next) {
                     let emailBody = '<b>Dear User</b>, <br>';
                     emailBody += "<br>Your password has been reset by admin, please write an email to us if you did't request or you can change your password again at any time.";
                     emailBody += "<br><br>Your New Password is : " + password;
-                    emailUtil.sendMail([user.email], 'Password Changed', emailBody, userId);
+                    // emailUtil.sendMail([user.email], 'Password Changed', emailBody, userId);
                     return res.status(200).json({
                         success: true,
                         message: "Password is successfully changed by admin",

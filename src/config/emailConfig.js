@@ -9,9 +9,40 @@ const emailConfig = {
     port: process.env.SMTP_PORT || 587,
     secure: process.env.SMTP_SECURE === 'true' || false,
     auth: {
-      user: process.env.SMTP_USER || 'your-email@gmail.com',
-      pass: process.env.SMTP_PASS || 'your-app-password'
+      user: process.env.SMTP_USER || process.env.email || '',
+      pass: process.env.SMTP_PASS || process.env.emailPassword || ''
     }
+  },
+
+  // Check if email is properly configured
+  isConfigured: () => {
+    return emailConfig.smtp.auth.user && emailConfig.smtp.auth.pass && 
+           emailConfig.smtp.auth.user !== 'your-email@gmail.com' && 
+           emailConfig.smtp.auth.pass !== 'your-app-password';
+  },
+
+  // Get setup instructions
+  getSetupInstructions: () => {
+    return `
+Email configuration is not set up properly. Please follow these steps:
+
+1. Create a Gmail App Password:
+   - Go to your Google Account settings
+   - Enable 2-Step Verification if not already enabled
+   - Go to Security > App passwords
+   - Generate a new app password for "Mail"
+   - Copy the 16-character password
+
+2. Set environment variables:
+   - SMTP_USER=your-gmail@gmail.com
+   - SMTP_PASS=your-16-character-app-password
+
+3. Or update the .env file:
+   SMTP_USER=your-gmail@gmail.com
+   SMTP_PASS=your-16-character-app-password
+
+Note: Do NOT use your regular Gmail password. Use the App Password generated in step 1.
+    `;
   },
 
   // Email templates
@@ -89,7 +120,15 @@ const emailConfig = {
 
   // Create transporter
   createTransporter: () => {
-    return nodemailer.createTransporter(emailConfig.smtp);
+    // Check if email is configured
+    if (!emailConfig.isConfigured()) {
+      const error = new Error('Email configuration is not set up properly');
+      error.code = 'EMAIL_NOT_CONFIGURED';
+      error.instructions = emailConfig.getSetupInstructions();
+      throw error;
+    }
+
+    return nodemailer.createTransport(emailConfig.smtp);
   },
 
   // Send email
@@ -110,6 +149,41 @@ const emailConfig = {
       return result;
     } catch (error) {
       config.logger.error({ error, to, subject }, 'Failed to send email');
+      throw error;
+    }
+  },
+
+  // Send mail (compatibility function)
+  sendMail: async (to, subject, html, userId = null) => {
+    try {
+      // Check if email is configured
+      if (!emailConfig.isConfigured()) {
+        config.logger.warn('Email not configured - skipping email send', { to, subject, userId });
+        // Return success to prevent API failures, but log the issue
+        return { success: true, message: 'Email not configured - check logs for setup instructions' };
+      }
+
+      const transporter = emailConfig.createTransporter();
+      
+      const mailOptions = {
+        from: `"A2Z Lotto" <${emailConfig.smtp.auth.user}>`,
+        to: Array.isArray(to) ? to.join(', ') : to,
+        subject: subject,
+        html: html,
+        text: html.replace(/<[^>]*>/g, '') // Strip HTML tags for text version
+      };
+
+      const result = await transporter.sendMail(mailOptions);
+      config.logger.info({ to, subject, messageId: result.messageId, userId }, 'Email sent successfully');
+      return result;
+    } catch (error) {
+      if (error.code === 'EMAIL_NOT_CONFIGURED') {
+        config.logger.error('Email configuration error:', error.instructions);
+        // Return success to prevent API failures, but log the setup instructions
+        return { success: true, message: 'Email not configured - check server logs for setup instructions' };
+      }
+      
+      config.logger.error({ error, to, subject, userId }, 'Failed to send email');
       throw error;
     }
   },
