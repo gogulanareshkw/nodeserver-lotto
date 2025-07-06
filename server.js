@@ -165,8 +165,6 @@ db.on('disconnected', function () {
 // Connect to MongoDB with enhanced options
 config.logger.info('Connecting to MongoDB:', config.MONGO_DB_URL);
 mongoose.connect(config.MONGO_DB_URL, {
-	useNewUrlParser: true,
-	useUnifiedTopology: true,
 	serverSelectionTimeoutMS: 5000,
 	socketTimeoutMS: 45000
 });
