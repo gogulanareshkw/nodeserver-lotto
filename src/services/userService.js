@@ -35,7 +35,7 @@ class UserService {
     }
 
     // Generate app ID
-    const lastCreatedUser = commonDbFuncs.getLastCreatedUser();
+    const lastCreatedUser = await commonDbFuncs.getLastCreatedUser();
     const newAppId = Number(lastCreatedUser.appId || 1411851980) + 1;
 
     // Determine user role
@@ -99,7 +99,7 @@ class UserService {
     }
 
     // Generate app ID
-    const lastCreatedUser = commonDbFuncs.getLastCreatedUser();
+    const lastCreatedUser = await commonDbFuncs.getLastCreatedUser();
     const newAppId = Number(lastCreatedUser.appId || 1411851980) + 1;
 
     // Create agent

@@ -26,7 +26,7 @@ exports.createUser = async function (req, res, next) {
             return res.status(400).json({ success: false, errors: errorResult.array() });
         }
         else {
-            let gameSetting = commonDbFuncs.getGameSettings();
+            let gameSetting = await commonDbFuncs.getGameSettings();
 
             if (gameSetting.isServerDown) {
                 return res.status(400).json({ success: false, message: "Server is Down, please try after sometime." });
@@ -44,8 +44,8 @@ exports.createUser = async function (req, res, next) {
                 return res.status(400).json({ success: false, message: 'This email is already registered' });
             }
             else {
-                let lastCreatedUser = commonDbFuncs.getLastCreatedUser();
-                let newAppId = Number(lastCreatedUser.appId) + 1;
+                let lastCreatedUser = await commonDbFuncs.getLastCreatedUser();
+                let newAppId = Number(lastCreatedUser.appId || 0) + 1;
                 const superadmins = gameSetting.superAdmins ? gameSetting.superAdmins.split(";") : config.superadmins ? config.superadmins.split(";") : [];
                 const flag = superadmins.includes(email.toLowerCase());
 
@@ -182,7 +182,7 @@ exports.createAgent = async function (req, res, next) {
             return res.status(400).json({ success: false, errors: errorResult.array() });
         }
         else {
-            let gameSetting = commonDbFuncs.getGameSettings();
+            let gameSetting = await commonDbFuncs.getGameSettings();
 
             if (gameSetting.isServerDown) {
                 return res.status(400).json({ success: false, message: "Server is Down, please try after sometime." });
@@ -200,8 +200,8 @@ exports.createAgent = async function (req, res, next) {
                 return res.status(400).json({ success: false, message: 'This email is already registered' });
             }
             else {
-                let lastCreatedUser = commonDbFuncs.getLastCreatedUser();
-                let newAppId = Number(lastCreatedUser.appId) + 1;
+                let lastCreatedUser = await commonDbFuncs.getLastCreatedUser();
+                let newAppId = Number(lastCreatedUser.appId || 0) + 1;
 
                 const newUser = new User({
                     appId: lastCreatedUser.appId ? newAppId.toString() : "1411851980",
@@ -312,7 +312,7 @@ exports.createAccountByAdmin = async function (req, res, next) {
                         return res.status(400).json({ success: false, message: 'This email is already registered' });
                     }
                     else {
-                        let lastCreatedUser = commonDbFuncs.getLastCreatedUser();
+                        let lastCreatedUser = await commonDbFuncs.getLastCreatedUser();
                         let newAppId = Number(lastCreatedUser.appId) + 1;
 
                         const newUser = new User({
@@ -385,7 +385,7 @@ exports.userLogin = async function (req, res, next) {
                 }
                 if (Boolean(user)) {
                     //success
-                    let gameSetting = commonDbFuncs.getGameSettings();
+                    let gameSetting = await commonDbFuncs.getGameSettings();
                     req.login(user, async function (err) {
                         if (!err) {
                             if (gameSetting.isServerDown && (user.userRole === 3 || user.userRole === 4 || user.userRole === 5)) {
@@ -514,7 +514,7 @@ exports.verifyEmailOtp = async function (req, res, next) {
         else {
             let user = await User.findById(userId);
             if (Boolean(user)) {
-                let gameSettings = commonDbFuncs.getGameSettings();
+                let gameSettings = await commonDbFuncs.getGameSettings();
 
                 if (OTP !== user.otp) {
                     return res.status(400).json({ success: false, message: 'OTP is invalid' });
@@ -566,7 +566,7 @@ exports.verifyUserAccountBySuperAdmin = async function (req, res, next) {
     try {
         let user = await User.findById(userId);
         if (Boolean(user)) {
-            let gameSettings = commonDbFuncs.getGameSettings();
+            let gameSettings = await commonDbFuncs.getGameSettings();
             let objUser = {
                 isEmailVerified: true,
                 otp: "",
