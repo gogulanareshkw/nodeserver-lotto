@@ -33,9 +33,8 @@ exports.createUser = async function (req, res, next) {
             }
 
             // verify email domain
-            let domain = email.replace(/.*@/, "");
-            let isInValidDomain = emailVerifier.checkDomain(domain);
-            if (isInValidDomain) {
+            let isValidDomain = emailVerifier.validateEmailDomain(email);
+            if (!isValidDomain) {
                 return res.status(400).json({ success: false, message: 'Invalid email domain' });
             }
 
@@ -172,9 +171,8 @@ exports.createAgent = async function (req, res, next) {
             }
 
             // verify email domain
-            let domain = email.replace(/.*@/, "");
-            let isInValidDomain = emailVerifier.checkDomain(domain);
-            if (isInValidDomain) {
+            let isValidDomain = emailVerifier.validateEmailDomain(email);
+            if (!isValidDomain) {
                 return res.status(400).json({ success: false, message: 'Invalid email domain' });
             }
 
@@ -258,9 +256,8 @@ exports.createAccountByAdmin = async function (req, res, next) {
             }
 
             // verify email domain
-            let domain = email.replace(/.*@/, "");
-            let isInValidDomain = emailVerifier.checkDomain(domain);
-            if (isInValidDomain) {
+            let isValidDomain = emailVerifier.validateEmailDomain(email);
+            if (!isValidDomain) {
                 return res.status(400).json({ success: false, message: 'Invalid email domain' });
             }
 
@@ -1224,7 +1221,7 @@ exports.rechargeUser = async function (req, res, next) {
                 }
             }
             else {
-                return res.status(400).json({ success: false, message: "Agent doesn't exist." })
+                return res.status(400).json({ success: false, message: "User doesn't exist." })
             }
         }
     } catch (ex) {
@@ -1299,7 +1296,7 @@ exports.deductUserBalance = async function (req, res, next) {
 
             }
             else {
-                return res.status(400).json({ success: false, message: "Admin doesn't exist." })
+                return res.status(400).json({ success: false, message: "User doesn't exist." })
             }
         }
     } catch (ex) {

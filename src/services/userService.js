@@ -18,8 +18,7 @@ class UserService {
     const { email, password, phone, confirmPassword, referredBy, latitude, longitude } = userData;
 
     // Validate email domain
-    const domain = email.replace(/.*@/, "");
-    if (emailVerifier.checkDomain(domain)) {
+    if (!emailVerifier.validateEmailDomain(email)) {
       throw new ValidationError('Invalid email domain');
     }
 
@@ -83,8 +82,7 @@ class UserService {
     } = agentData;
 
     // Validate email domain
-    const domain = email.replace(/.*@/, "");
-    if (emailVerifier.checkDomain(domain)) {
+    if (!emailVerifier.validateEmailDomain(email)) {
       throw new ValidationError('Invalid email domain');
     }
 

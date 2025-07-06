@@ -9,8 +9,9 @@ const emailVerifier = {
   },
 
   // Check if email domain is valid
-  validateEmailDomain: (email) => {
-    const domain = email.replace(/.*@/, "");
+  validateEmailDomain: (emailOrDomain) => {
+    // If it's an email, extract the domain
+    const domain = emailOrDomain.includes('@') ? emailOrDomain.replace(/.*@/, "") : emailOrDomain;
     const invalidDomains = ['tempmail.com', 'throwaway.com', 'test.com'];
     return !invalidDomains.includes(domain.toLowerCase());
   },
