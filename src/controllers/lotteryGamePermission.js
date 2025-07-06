@@ -1,3 +1,4 @@
+const config = require('../../config');
 var moment = require('moment');
 const LotteryGamePermission = require('../models/lotteryGamePermission');
 var commonDbFuncs = require("../utils/commonDbFuncs");
@@ -45,7 +46,7 @@ exports.getAllLotteryGamePermissions = async function (req, res, next) {
     // #swagger.tags = ['LotteryGamePermission']	
     // #swagger.summary = '(P) -> get all Lottery Game Permissions'
     try {
-        let permissions = await LotteryGameBoard.find({})
+        let permissions = await LotteryGamePermission.find({})
             .sort('-createdDateTime')
             .exec();
         return res.status(200).json({ success: true, lotteryGamePermissions: permissions });

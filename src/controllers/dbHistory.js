@@ -1,3 +1,4 @@
+const config = require('../../config');
 var _ = require('lodash');
 const MobileData = require('../models/mobileData');
 const UserContacts = require('../models/userContacts');

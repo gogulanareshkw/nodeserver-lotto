@@ -1,3 +1,4 @@
+const config = require('../../config');
 const LotteryGameSetting = require('../models/lotteryGameSetting');
 var commonDbFuncs = require("../utils/commonDbFuncs");
 const { body, validationResult } = require('express-validator');

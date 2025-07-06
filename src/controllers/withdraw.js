@@ -1,3 +1,4 @@
+const config = require('../../config');
 var _ = require('lodash');
 var moment = require('moment');
 const Withdraw = require('../models/withdraw');
