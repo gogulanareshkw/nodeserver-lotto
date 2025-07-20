@@ -21,7 +21,7 @@ module.exports = async function (req, res, next) {
       if (user.blockedByAdmin) {
         return res.status(400).json({ success: false, message: "Your account is blocked by Admin." });
       }
-      if (gameSetting.isServerDown && (user.userRole === constants.USER_ROLE_USER || user.userRole === constants.USER_ROLE_AGENT)) {
+      if (gameSetting.isServerDown && (user.userRole === constants.USER_ROLE_CUSTOMER || user.userRole === constants.USER_ROLE_AGENT)) {
         return res.status(400).json({ success: false, message: "Server is Down, please try after sometime." });
       }
       else {

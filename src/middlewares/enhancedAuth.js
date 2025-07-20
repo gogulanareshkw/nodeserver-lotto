@@ -68,7 +68,7 @@ const requireSuperAdmin = authorize(constants.USER_ROLE_SUPER);
 const requireAdmin = authorize(constants.USER_ROLE_SUPER, constants.USER_ROLE_ADMIN);
 const requireStaff = authorize(constants.USER_ROLE_SUPER, constants.USER_ROLE_ADMIN, constants.USER_ROLE_STAFF);
 const requireAgent = authorize(constants.USER_ROLE_SUPER, constants.USER_ROLE_ADMIN, constants.USER_ROLE_AGENT);
-const requireUser = authorize(constants.USER_ROLE_SUPER, constants.USER_ROLE_ADMIN, constants.USER_ROLE_USER, constants.USER_ROLE_AGENT);
+const requireUser = authorize(constants.USER_ROLE_SUPER, constants.USER_ROLE_ADMIN, constants.USER_ROLE_CUSTOMER, constants.USER_ROLE_AGENT);
 
 // Resource Ownership Middleware
 const requireOwnership = (resourceModel, resourceIdField = 'id') => {

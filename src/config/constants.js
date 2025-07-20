@@ -19,7 +19,7 @@ define("GENDER_TYPE_FEMALE", "Female");
 //USER ROLES
 define("USER_ROLE_SUPER", 1);
 define("USER_ROLE_ADMIN", 2);
-define("USER_ROLE_USER", 3);
+define("USER_ROLE_CUSTOMER", 3);
 define("USER_ROLE_AGENT", 4);
 define("USER_ROLE_STAFF", 5);
 

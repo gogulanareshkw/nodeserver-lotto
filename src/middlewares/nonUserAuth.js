@@ -19,7 +19,7 @@ module.exports = async function (req, res, next) {
             if (user.blockedByAdmin) {
                 return res.status(400).json({ success: false, message: "Your account is blocked by Admin." });
             }
-            if (user.userRole !== constants.USER_ROLE_USER) {
+            if (user.userRole !== constants.USER_ROLE_CUSTOMER) {
                 req.user = decoded;
                 next();
             }

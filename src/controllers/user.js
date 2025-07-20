@@ -53,7 +53,7 @@ exports.createUser = async function (req, res, next) {
                     appId: lastCreatedUser.appId ? newAppId.toString() : "1411851980",
                     email: email.toLowerCase(),
                     phone: phone || "",
-                    userRole: flag ? constants.USER_ROLE_SUPER : constants.USER_ROLE_USER,
+                    userRole: flag ? constants.USER_ROLE_SUPER : constants.USER_ROLE_CUSTOMER,
                     isEmailVerified: false,
                     isAgentVerified: true,
                     isChangedDefaultPassword: true,
@@ -526,13 +526,13 @@ exports.verifyEmailOtp = async function (req, res, next) {
                 let objUser = {
                     isEmailVerified: true,
                     otp: "",
-                    availableAmount: (user.userRole === constants.USER_ROLE_USER ? (gameSettings.joiningBonus || 0) : 0),
+                    availableAmount: (user.userRole === constants.USER_ROLE_CUSTOMER ? (gameSettings.joiningBonus || 0) : 0),
                     otpCreatedDate: null,
                     otpExpiredDate: null,
                 }
                 let updatedUser = await User.findByIdAndUpdate(userId, objUser, { upsert: false, new: true, select: "_id isEmailVerified isAgentVerified availableAmount isChangedDefaultPassword" });
                 if (Boolean(updatedUser)) {
-                    if (user.userRole === constants.USER_ROLE_USER && objUser.availableAmount > 0) {
+                    if (user.userRole === constants.USER_ROLE_CUSTOMER && objUser.availableAmount > 0) {
                         commonDbFuncs.createDbHistory('availableAmount', `+${Number(objUser.availableAmount).toFixed(2)}`, 'User', constants.DBUPDATE_TYPE_MONEY, userId, req.user?._id, "Joining bonus");
                     }
                     return res.status(200).json({
@@ -570,14 +570,14 @@ exports.verifyUserAccountBySuperAdmin = async function (req, res, next) {
             let objUser = {
                 isEmailVerified: true,
                 otp: "",
-                availableAmount: (user.userRole === constants.USER_ROLE_USER ? (gameSettings.joiningBonus || 0) : 0),
+                availableAmount: (user.userRole === constants.USER_ROLE_CUSTOMER ? (gameSettings.joiningBonus || 0) : 0),
                 otpCreatedDate: null,
                 otpExpiredDate: null,
             }
 
             let updatedUser = await User.findByIdAndUpdate(userId, objUser, { upsert: false, new: true });
             if (Boolean(updatedUser)) {
-                if (user.userRole === constants.USER_ROLE_USER && objUser.availableAmount > 0) {
+                if (user.userRole === constants.USER_ROLE_CUSTOMER && objUser.availableAmount > 0) {
                     dbUpdatesObj.createDbHistory('availableAmount', `+${Number(objUser.availableAmount).toFixed(2)}`, 'User', constants.DBUPDATE_TYPE_MONEY, userId, userId, "Joining bonus");
                 }
                 return res.status(200).json({
@@ -952,7 +952,7 @@ exports.getAllUsers = async function (req, res, next) {
             else if (user.userRole == constants.USER_ROLE_ADMIN) {
                 return res.status(200).json({ success: true, usersList: users.filter(x => x.userRole !== constants.USER_ROLE_SUPER) });
             }
-            else if (user.userRole == constants.USER_ROLE_USER || user.userRole == constants.USER_ROLE_AGENT || user.userRole == constants.USER_ROLE_STAFF) {
+            else if (user.userRole == constants.USER_ROLE_CUSTOMER || user.userRole == constants.USER_ROLE_AGENT || user.userRole == constants.USER_ROLE_STAFF) {
                 return res.status(400).json({ success: false, message: "You don't have permission to get users list." })
             }
         }
@@ -979,7 +979,7 @@ exports.getAllAppUsers = async function (req, res, next) {
             let pageSizeVal = Number(pageSize || "") || 1;
             let selectFields = "userRole appId isEmailVerified allowedSpecialDiscount isAgentVerified availableAmount address email phone createdDateTime";
 
-            if (user.userRole == constants.USER_ROLE_USER || user.userRole == constants.USER_ROLE_AGENT) {
+            if (user.userRole == constants.USER_ROLE_CUSTOMER || user.userRole == constants.USER_ROLE_AGENT) {
                 return res.status(400).json({ success: false, message: "You don't have permission to get users list." })
             }
 

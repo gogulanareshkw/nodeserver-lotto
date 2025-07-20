@@ -420,7 +420,7 @@ class LotteryService {
     const roles = [
       constants.USER_ROLE_SUPER,
       constants.USER_ROLE_ADMIN,
-      constants.USER_ROLE_USER,
+      constants.USER_ROLE_CUSTOMER,
       constants.USER_ROLE_AGENT,
       constants.USER_ROLE_STAFF
     ];

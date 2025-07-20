@@ -31,7 +31,7 @@ const UserSchema = mongoose.Schema({
 	gender: { type: String, default: constants.GENDER_TYPE_MALE, enum: [constants.GENDER_TYPE_MALE, constants.GENDER_TYPE_FEMALE], es_indexed: true },
 	phone: { type: String, default: "" },
 	email: { type: String, unique: true, required: true, trim: true, lowercase: true, set: v => v.toLowerCase() },
-	userRole: { type: Number, enum: [constants.USER_ROLE_SUPER, constants.USER_ROLE_ADMIN, constants.USER_ROLE_USER, constants.USER_ROLE_AGENT, constants.USER_ROLE_STAFF] },
+	userRole: { type: Number, enum: [constants.USER_ROLE_SUPER, constants.USER_ROLE_ADMIN, constants.USER_ROLE_CUSTOMER, constants.USER_ROLE_AGENT, constants.USER_ROLE_STAFF] },
 	isEmailVerified: { type: Boolean, default: false },
 	isAgentVerified: { type: Boolean, default: false },
 	activeStatus: { type: Boolean, default: false, required: true },

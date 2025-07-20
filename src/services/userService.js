@@ -49,7 +49,7 @@ class UserService {
       appId: newAppId.toString(),
       email: email.toLowerCase(),
       phone: phone || "",
-      userRole: isSuperAdmin ? constants.USER_ROLE_SUPER : constants.USER_ROLE_USER,
+      userRole: isSuperAdmin ? constants.USER_ROLE_SUPER : constants.USER_ROLE_CUSTOMER,
       isEmailVerified: false,
       isAgentVerified: true,
       isChangedDefaultPassword: true,
@@ -163,7 +163,7 @@ class UserService {
     }
 
     // Check access permissions
-    if (requestingUser.userRole === constants.USER_ROLE_USER && 
+    if (requestingUser.userRole === constants.USER_ROLE_CUSTOMER && 
         user._id.toString() !== requestingUser._id.toString()) {
       throw new AppError('Access denied', 403);
     }
@@ -174,7 +174,7 @@ class UserService {
   // Update user profile
   static async updateUserProfile(userId, updateData, requestingUser) {
     // Check if user can update this profile
-    if (requestingUser.userRole === constants.USER_ROLE_USER && 
+    if (requestingUser.userRole === constants.USER_ROLE_CUSTOMER && 
         userId !== requestingUser._id.toString()) {
       throw new AppError('You can only update your own profile', 403);
     }
@@ -275,7 +275,7 @@ class UserService {
       $inc: { referralCount: 1 }
     };
 
-    if (matchingOffer && referralUser.userRole === constants.USER_ROLE_USER) {
+    if (matchingOffer && referralUser.userRole === constants.USER_ROLE_CUSTOMER) {
       updateObj.$inc.availableAmount = Number(matchingOffer.bonusValue);
       
       // Create database history
