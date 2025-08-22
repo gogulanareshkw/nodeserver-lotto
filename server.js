@@ -8,7 +8,7 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger_doc.json');
 const bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 const router = express.Router();
 const app = express();
 const hostname = '127.0.0.1';
@@ -139,38 +139,43 @@ router.get('/', function (req, res) {
 });
 
 // Database connection with enhanced error handling
-var db = mongoose.connection;
+const db = mongoose.connection;
 
-db.on('connecting', function () {
-	config.logger.info('MongoDB connecting...');
+// Log MongoDB connection events
+db.on('connecting', () => {
+  config.logger.info('MongoDB connecting...');});
+
+db.on('connected', () => {
+  config.logger.info('✅ MongoDB connected successfully');
 });
 
-db.on('error', function (error) {
-	config.logger.error({ error }, 'MongoDB connection error');
-	mongoose.disconnect();
+db.once('open', () => {
+  config.logger.info('🔓 MongoDB connection is open');
 });
 
-db.on('connected', function () {
-	config.logger.info('MongoDB connected successfully');
+db.on('reconnected', () => {
+  config.logger.info('🔄 MongoDB reconnected');
 });
 
-db.once('open', function () {
-	config.logger.info('MongoDB connection open');
+db.on('disconnected', () => {
+  config.logger.warn('⚠️ MongoDB disconnected');
 });
 
-db.on('reconnected', function () {
-	config.logger.info('MongoDB reconnected');
+db.on('error', (error) => {
+  config.logger.error('❌ MongoDB connection error:', error.message);
+  mongoose.disconnect();
 });
 
-db.on('disconnected', function () {
-	config.logger.warn('MongoDB disconnected');
-});
-
-// Connect to MongoDB with enhanced options
-config.logger.info('Connecting to MongoDB:', config.MONGO_DB_URL);
+// Connect to MongoDB
+config.logger.info('🔌 Connecting to MongoDB:', config.MONGO_DB_URL);
 mongoose.connect(config.MONGO_DB_URL, {
-	serverSelectionTimeoutMS: 5000,
-	socketTimeoutMS: 45000
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 45000
+}).catch(err => {
+  config.logger.error('❌ Failed to connect to MongoDB:', err.message);
+  process.exit(1);
 });
 
 // Enhanced global middleware

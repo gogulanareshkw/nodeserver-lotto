@@ -100,7 +100,7 @@ exports.newWithdrawRequest = async function (req, res, next) {
         }
         else {
             let bankCardInfo = await BankCard.findById(bankCardId);
-            let gameSettings = commonDbFuncs.getGameSettings();
+            let gameSettings = await commonDbFuncs.getGameSettings();
             if (parseFloat(withdrawAmount) < parseFloat(gameSettings.minimumWithdraw)) {
                 return res.status(400).json({ success: false, message: "Minimum withdraw amount is " + gameSettings.minimumWithdraw });
             }

@@ -131,6 +131,7 @@ exports.getGameSettings = async function () {
         else {
             gameSetting = gameSettingResults[0];
         }
+        console.log("Game settings results:", gameSettingResults);
         return gameSetting;
     } catch (ex) {
         exports.createApplicationLog(null, "commonDbFuncs->getGameSettings", JSON.stringify({}), JSON.stringify(ex), ex?.message, ex?.toString() || "");

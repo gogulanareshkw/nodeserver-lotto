@@ -131,7 +131,7 @@ const rateLimit = (maxRequests = 100, windowMs = 15 * 60 * 1000) => {
 // Server Status Check Middleware
 const checkServerStatus = asyncHandler(async (req, res, next) => {
   const commonDbFuncs = require("../utils/commonDbFuncs");
-  const gameSetting = commonDbFuncs.getGameSettings();
+  const gameSetting = await commonDbFuncs.getGameSettings();
 
   if (gameSetting.isServerDown) {
     // Allow admin access even when server is down

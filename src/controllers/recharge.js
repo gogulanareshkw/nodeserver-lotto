@@ -165,7 +165,7 @@ exports.newRechargeRequest = async function (req, res, next) {
             return res.status(400).json({ success: false, errors: errorResult.array() });
         }
         else {
-            let gameSettings = commonDbFuncs.getGameSettings();
+            let gameSettings = await commonDbFuncs.getGameSettings();
 
             let existingRefDetails = await Recharge.find({
                 referenceNumber: referenceNumber,
@@ -270,7 +270,7 @@ exports.updateRechargeStatus = async function (req, res, next) {
             return res.status(400).json({ success: false, errors: errorResult.array() });
         }
         else {
-            let gameSettings = commonDbFuncs.getGameSettings();
+            let gameSettings = await commonDbFuncs.getGameSettings();
             let rechargeOffers = await Offer.find({ type: constants.OFFER_TYPE_RECHARGE_BONUS });
             let rechargeDetails = await Recharge.findById(rechargeId);
             let reviewdUser = await User.findById(rechargedBy);

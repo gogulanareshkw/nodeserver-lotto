@@ -15,7 +15,7 @@ module.exports = async function (req, res, next) {
     const bearer = token.split(' ');
     const validtoken = bearer[1];
     const decoded = jwt.verify(validtoken, config.jwtSecret);
-    let gameSetting = commonDbFuncs.getGameSettings();
+    let gameSetting = await commonDbFuncs.getGameSettings();
     var user = await User.findById(decoded._id);
     if (Boolean(user)) {
       if (user.blockedByAdmin) {

@@ -721,7 +721,7 @@ exports.cleanupDbDataByDate = async function (req, res, next) {
             return res.status(400).json({ success: false, errors: errorResult.array() });
         }
         else {
-            let gameSettings = commonDbFuncs.getGameSettings();
+            let gameSettings = await commonDbFuncs.getGameSettings();
 
             let canClean = jsFuncs.canCleanupCollectionData(startDate, endDate, gameSettings?.canClearCollectionFrom || 3) || false;
 

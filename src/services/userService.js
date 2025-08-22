@@ -29,7 +29,7 @@ class UserService {
     }
 
     // Check server status
-    const gameSetting = commonDbFuncs.getGameSettings();
+    const gameSetting = await commonDbFuncs.getGameSettings();
     if (gameSetting.isServerDown) {
       throw new AppError('Server is under maintenance', 503);
     }
@@ -93,7 +93,7 @@ class UserService {
     }
 
     // Check server status
-    const gameSetting = commonDbFuncs.getGameSettings();
+    const gameSetting = await commonDbFuncs.getGameSettings();
     if (gameSetting.isServerDown) {
       throw new AppError('Server is under maintenance', 503);
     }

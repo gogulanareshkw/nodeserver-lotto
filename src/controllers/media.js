@@ -10,7 +10,7 @@ exports.getMediaAssetFromCloudinary = async function (req, res, next) {
     // #swagger.tags = ['Media']	
     // #swagger.summary = '(P) -> get all assets from cloudinary'
     try {
-        let gameSettings = commonDbFuncs.getGameSettings();
+        let gameSettings = await commonDbFuncs.getGameSettings();
 
         cloudinary.config({
             cloud_name: gameSettings.cloudinaryCloudName || config.CLOUDINARY_CLOUDNAME,
@@ -59,7 +59,7 @@ exports.uploadImageFileIntoCloudinary = async function (req, res, next) {
             return res.status(400).json({ success: false, message: "File is missing" });
         }
 
-        let gameSettings = commonDbFuncs.getGameSettings();
+        let gameSettings = await commonDbFuncs.getGameSettings();
 
         cloudinary.config({
             cloud_name: gameSettings.cloudinaryCloudName || config.CLOUDINARY_CLOUDNAME,
@@ -108,7 +108,7 @@ exports.deleteCloudinaryImageByPublicId = async function (req, res, next) {
             return res.status(400).json({ success: false, message: "publicId is required" });
         }
 
-        let gameSettings = commonDbFuncs.getGameSettings();
+        let gameSettings = await commonDbFuncs.getGameSettings();
 
         cloudinary.config({
             cloud_name: gameSettings.cloudinaryCloudName || config.CLOUDINARY_CLOUDNAME,

@@ -289,7 +289,7 @@ exports.playLotteryGame = async function (req, res, next) {
             return res.status(400).json({ success: false, errors: errorResult.array() });
         }
         else {
-            let gameSettings = commonDbFuncs.getGameSettings();
+            let gameSettings = await commonDbFuncs.getGameSettings();
             let lotteryGameSetting = await LotteryGameSetting.findOne({ lotteryGameType: type }) || {};
             if (!lotteryGameSetting._id) {
                 return res.status(400).json({ success: false, message: "Lottery Game Settings not initialized yet" });

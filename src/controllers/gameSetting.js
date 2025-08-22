@@ -31,7 +31,7 @@ exports.getAllGameSettings = async function (req, res, next) {
     // #swagger.tags = ['Settings']	
     // #swagger.summary = '(A) -> get all game settings'
     try {
-        let gameSettings = commonDbFuncs.getGameSettings();
+        let gameSettings = await commonDbFuncs.getGameSettings();
         return res.json({
             success: true,
             gameSettings: gameSettings

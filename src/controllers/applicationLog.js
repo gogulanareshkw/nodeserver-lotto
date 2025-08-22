@@ -42,7 +42,7 @@ exports.addApplicationLog = async function (req, res, next) {
     // #swagger.summary = '(A) -> add applicationlog'
     const { userId, errorMethod, inputPayload, errorInfo, errorMessage, errorInString } = req.body;
     try {
-        let log = commonDbFuncs.createApplicationLog(userId, errorMethod, inputPayload, errorInfo, errorMessage, errorInString);
+        let log = await commonDbFuncs.createApplicationLog(userId, errorMethod, inputPayload, errorInfo, errorMessage, errorInString);
         return res.status(200).json({ success: true, createdLog: log });
     } catch (ex) {
         config.logger.error({ ex }, 'Error in applicationLogController->addApplicationLog');
