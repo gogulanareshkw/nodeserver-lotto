@@ -405,6 +405,7 @@ exports.userLogin = async function (req, res, next) {
                                         token: newToken,
                                         tokenExpiration: tokenExp,
                                         user: {
+                                            _id: savedUser._id,
                                             userId: savedUser._id,
                                             email: savedUser.email,
                                             userRole: savedUser.userRole,
@@ -428,6 +429,7 @@ exports.userLogin = async function (req, res, next) {
                                     token: newToken,
                                     tokenExpiration: tokenExp,
                                     user: {
+                                        _id: user._id,
                                         userId: user._id,
                                         email: user.email,
                                         userRole: user.userRole,
@@ -479,6 +481,7 @@ exports.sendActivationMail = async function (req, res, next) {
             if (Boolean(savedUser)) {
                 return res.status(200).json({
                     success: true,
+                    _id: savedUser._id,
                     userId: savedUser._id,
                 });
             }
@@ -676,6 +679,7 @@ exports.forgotPassword = async function (req, res, next) {
                 if (Boolean(savedUser)) {
                     return res.status(200).json({
                         success: true,
+                        _id: savedUser._id,
                         userId: savedUser._id
                     });
                 }
@@ -895,6 +899,7 @@ exports.approveAgentAccount = async function (req, res, next) {
         if (Boolean(updatedUser)) {
             return res.status(200).json({
                 success: true,
+                _id: userId,
                 userId: userId,
                 isAgentVerified: updatedUser.isAgentVerified,
                 updatedDateTime: updatedUser.updatedDateTime
