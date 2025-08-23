@@ -2,6 +2,7 @@ var moment = require('moment');
 const BankCard = require('../models/bankCard');
 var commonDbFuncs = require("../utils/commonDbFuncs");
 const { body, validationResult } = require('express-validator');
+const config = require('../config/constants');
 
 
 exports.getAllBankCardsByUserId = async function (req, res, next) {
@@ -112,9 +113,12 @@ exports.createNewBankCard = async function (req, res, next) {
 exports.updateBankCard = async function (req, res, next) {
     // #swagger.tags = ['BankCard']	
     // #swagger.summary = '(A) -> update BankCard'
-    const { bankCardId, upiId, accountNumber, accountHolderName, ifscCode, phoneNumber, type } = req.body;
+    const cardId = req.params.cardId || '';
+    const { upiId, accountNumber, accountHolderName, ifscCode, phoneNumber, type } = req.body;
     try {
-        await body('bankCardId', "bankCardId is required").notEmpty().run(req);
+        if (cardId === '') {
+            return res.status(400).json({ success: false, message: "cardId is required" });
+        }
         await body('type', "type is required").notEmpty().run(req);
         if (type === "UPI") {
             await body('upiId', "upiId is required").notEmpty().run(req);
@@ -149,7 +153,7 @@ exports.updateBankCard = async function (req, res, next) {
                 };
             }
 
-            let updatedItem = await BankCard.findByIdAndUpdate(bankCardId, objCard, { upsert: false, new: true });
+            let updatedItem = await BankCard.findByIdAndUpdate(cardId, objCard, { upsert: false, new: true });
             if (Boolean(updatedItem)) {
                 return res.status(200).json({
                     success: true,
@@ -162,7 +166,7 @@ exports.updateBankCard = async function (req, res, next) {
         }
     } catch (ex) {
         config.logger.error({ ex }, 'Error in bankCardController->updateBankCard');
-        commonDbFuncs.createApplicationLog(req.user?._id, "bankCardController->updateBankCard", JSON.stringify({ bankCardId, upiId, accountNumber, accountHolderName, ifscCode, phoneNumber, type }), JSON.stringify(ex), ex?.message, ex?.toString() || "");
+        commonDbFuncs.createApplicationLog(req.user?._id, "bankCardController->updateBankCard", JSON.stringify({ cardId, upiId, accountNumber, accountHolderName, ifscCode, phoneNumber, type }), JSON.stringify(ex), ex?.message, ex?.toString() || "");
         return res.status(400).json({ success: false, message: ex?.message || ex });
     }
 }

@@ -8,8 +8,8 @@ apiRouter
 	.get('/', auth, bankCardController.getAllBankCardsByUserId)
 	.get('/:type', commonAdminAuth, bankCardController.getAllBankCardsByType)
 	.post('/', auth, bankCardController.createNewBankCard)
-	.put('/', auth, bankCardController.updateBankCard)
-	.put('/:cardId', auth, bankCardController.makeActiveBankCard)
+	.put('/:cardId', auth, bankCardController.updateBankCard)
+	.put('/:cardId/active', auth, bankCardController.makeActiveBankCard)
 	.delete('/:cardId', auth, bankCardController.deleteBankCard)
 
 module.exports = apiRouter;
